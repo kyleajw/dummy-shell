@@ -1,12 +1,9 @@
 use std::env;
-use std::format;
 use std::io;
 use std::io::Write;
 use std::io::stdout;
 use std::path::Path;
 use std::path::PathBuf;
-use std::print;
-use std::println;
 
 fn main() -> std::io::Result<()>{
     print!("\x1b[2J\x1b[1;1H");
