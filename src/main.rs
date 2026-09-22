@@ -1,9 +1,12 @@
 use std::env;
+use std::format;
+use std::fs;
 use std::io;
 use std::io::Write;
 use std::io::stdout;
 use std::path::Path;
 use std::path::PathBuf;
+use std::println;
 
 fn main() -> std::io::Result<()>{
     print!("\x1b[2J\x1b[1;1H");
@@ -18,6 +21,7 @@ fn main() -> std::io::Result<()>{
         
         match args.remove(0){
             "cd" => change_dir(&mut args, &mut current_dir),
+            "ls" => list_directory(&mut args, &current_dir),
             "cls" => clear(),
             "exit" => return Ok(()),
             _=>println!("\x1b[31mINVALID COMMAND\x1b[0m"),
@@ -31,7 +35,9 @@ fn change_dir(args: &mut Vec<&str>, current_dir: &mut PathBuf){
     if args.is_empty(){
         println!("{}", current_dir.display());
     }else{
-        let path = args.remove(0);
+        
+        let path = args.join(" ");
+        println!("{}", path);
         if dir_exists(&path, current_dir){
             current_dir.push(PathBuf::from(path));
 
@@ -77,5 +83,21 @@ fn simplify_path(path: &mut PathBuf){
             p.push_str(s.as_str());
         }
         *path = PathBuf::from(p);
+    }
+}
+
+fn list_directory(args: &mut Vec<&str>, current_dir: &PathBuf){
+    for item in fs::read_dir(current_dir).expect("READ ERROR"){
+        let entry = item.expect("ENTRY ERROR");
+        let mut entry_string = String::new();
+        let path = entry.path();
+        if path.is_dir(){
+            entry_string = format!("\x1b[1;36m{}\x1b[0m\x1b[22m",entry.file_name().into_string().expect("ENTRY STRING CONVERSION ERROR"));
+
+        }
+        else{
+            entry_string = format!("{}", entry.file_name().into_string().expect("ENTRY STRING CONVERSION ERROR"))
+        }
+        println!("{}", entry_string);
     }
 }
