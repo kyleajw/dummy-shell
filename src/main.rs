@@ -35,9 +35,7 @@ fn change_dir(args: &mut Vec<&str>, current_dir: &mut PathBuf){
     if args.is_empty(){
         println!("{}", current_dir.display());
     }else{
-        
         let path = args.join(" ");
-        println!("{}", path);
         if dir_exists(&path, current_dir){
             current_dir.push(PathBuf::from(path));
 
@@ -93,7 +91,6 @@ fn list_directory(args: &mut Vec<&str>, current_dir: &PathBuf){
         let path = entry.path();
         if path.is_dir(){
             entry_string = format!("\x1b[1;36m{}\x1b[0m\x1b[22m",entry.file_name().into_string().expect("ENTRY STRING CONVERSION ERROR"));
-
         }
         else{
             entry_string = format!("{}", entry.file_name().into_string().expect("ENTRY STRING CONVERSION ERROR"))
